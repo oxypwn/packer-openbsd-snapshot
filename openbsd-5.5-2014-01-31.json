@@ -1,0 +1,83 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "I<enter>",
+        "<enter>",
+        "openbsd<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "password<enter>password<enter>",
+        "<enter>",
+        "<enter>",
+        "no<enter>",
+        "vagrant<enter>",
+        "<enter>",
+        "vagrant<enter>vagrant<enter>",
+        "no<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "<wait10><enter>",
+        "c<enter>",
+        "a<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "/<enter>",
+        "a<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "<enter>",
+        "w<enter>",
+        "q<enter>",
+        "http<enter>",
+        "<wait10><enter>",
+        "<enter>",
+        "<enter>",
+        "-x* -game*<enter>",
+        "<enter>",
+        "yes<enter>",
+        "<enter>",
+        "<enter>",
+        "reboot<enter>"
+      ],
+      "boot_wait": "15s",
+      "guest_os_type": "OpenBSD_64",
+      "iso_checksum": "e1b7a41085af2c1d41ccad599bf35b0ad832fc80e8845dd6910cbb5cccb86ab3",
+      "iso_checksum_type": "sha256",
+      "iso_url": "http://ftp.eu.openbsd.org/pub/OpenBSD/snapshots/amd64/cd55.iso",
+      "shutdown_command": "shutdown -hp now; shutdown -hp now",
+      "ssh_password": "password",
+      "ssh_username": "root",
+      "ssh_wait_timeout": "1200s",
+      "type": "virtualbox-iso"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "packer-openbsd-snapshot.box"
+    }
+  ],
+  "provisioners": [
+    {
+      "inline": [
+        "echo export PKG_PATH=\"http://ftp.iij.ad.jp/pub/OpenBSD/snapshots/packages/amd64\" >> /root/.profile",
+        ". /root/.profile",
+        "pkg_add rsync--iconv",
+        "pkg_add bash wget git vim--no_x11",
+        "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers",
+        "install -d /home/vagrant/.ssh -m 0700",
+        "cd /tmp; wget https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub",
+        "install -o vagrant -g vagrant -m 0400 /tmp/vagrant.pub /home/vagrant/.ssh/authorized_keys"
+      ],
+      "type": "shell"
+    }
+  ]
+}
+
